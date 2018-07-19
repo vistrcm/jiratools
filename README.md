@@ -1,7 +1,7 @@
 # jiratools
 Set of tools to work with jira.
 
-# crawler
+## crawler
 crawler.py search jira tickets defined by pattern and save it as json files in specified folder.
 
 ```bash
@@ -26,3 +26,10 @@ $ python crawler.py -h
     --verify_ssl [VERIFY_SSL]
                           verify ssl for jira connection
 ``` 
+
+To start in docker run
+```bash
+$ docker run -it -v ${PWD}/dump:/dump \
+    vistrcm/jiratoolscrawler \
+        https://jira/rest/api/2 user "superpass" "assignee = currentUser()" --dst /dump
+```
