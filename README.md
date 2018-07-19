@@ -1,12 +1,12 @@
 # jiratools
 Set of tools to work with jira.
 
-# crowler
-crowler.py search jira tickets defined by pattern and save it as json files in specified folder.
+# crawler
+crawler.py search jira tickets defined by pattern and save it as json files in specified folder.
 
 ```bash
-$ python crowler.py -h
-  usage: crowler.py [-h] [--dst DST] [--no_verify_ssl NO_VERIFY_SSL]
+$ python crawler.py -h
+  usage: crawler.py [-h] [--dst DST] [--no_verify_ssl NO_VERIFY_SSL]
                     [--verify_ssl [VERIFY_SSL]]
                     url user password jql
   
