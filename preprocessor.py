@@ -22,12 +22,28 @@ def process_issue(issue):
     pprint(cleaned)
 
 
+def get_text(issue):
+    return "\n\n".join([issue["fields"]["summary"], issue["fields"]["description"]])
+
+
 def main():
     files = os.listdir(DUMP_DIR)
     for file in files:
         with open(os.path.join(DUMP_DIR, file), 'r') as json_data:
             issue = json.load(json_data)
             process_issue(issue)
+
+
+def get_megatext(out_file="megatext.txt"):
+    megatext = ""
+    files = os.listdir(DUMP_DIR)
+    for file in files:
+        with open(os.path.join(DUMP_DIR, file), 'r') as json_data:
+            issue = json.load(json_data)
+            megatext += get_text(issue)
+    with open(out_file, "w") as out:
+        out.write(megatext)
+    print("{} created".format(out_file))
 
 
 if __name__ == "__main__":
