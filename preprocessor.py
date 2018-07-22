@@ -2,6 +2,9 @@ import json
 import os
 from pprint import pprint
 
+import nltk
+from nltk.corpus import stopwords
+
 DUMP_DIR = "dump"
 
 
@@ -46,5 +49,52 @@ def get_megatext(out_file="megatext.txt"):
     print("{} created".format(out_file))
 
 
+def keep_token(tk):
+    if not tk.isalnum():
+        return False
+    if tk.isdigit():
+        return False
+    if tk in stopwords.words('english'):
+        return False
+    if len(tk) < 2:
+        return False
+    return True
+
+
+def process_text(text):
+    # print("processing text")
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('wordnet')
+
+    text = text.lower()
+
+    no_code = text.replace("{code}", "")
+
+    tokens = nltk.wordpunct_tokenize(no_code)
+    clean_tokens = [t for t in tokens if keep_token(t)]
+
+    # lemmanization
+    lemmatizer = nltk.WordNetLemmatizer()
+    lemmanized = map(lemmatizer.lemmatize, clean_tokens)
+
+    return lemmanized
+
+
+def process_megatext(in_file="megatext.txt"):
+    with open(in_file, 'r') as inf:
+        data = inf.read()
+        limit_line = len(data) // 10
+        # out = process_text(data[:limit_line])
+        out = process_text(data)
+
+    freq = nltk.FreqDist(out)
+    for key, val in freq.items():
+        print("{}: {}".format(val, key))
+
+    # print(out)
+
+
 if __name__ == "__main__":
-    main()
+    # main()
+    process_megatext()
