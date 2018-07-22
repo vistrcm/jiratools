@@ -5,6 +5,7 @@ name = "pypi"
 
 [packages]
 requests = "*"
+nltk = "*"
 
 [dev-packages]
 pylint = "*"
