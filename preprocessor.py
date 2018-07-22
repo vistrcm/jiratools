@@ -1,11 +1,17 @@
 import json
 import os
-from pprint import pprint
 
 import nltk
 from nltk.corpus import stopwords
 
 DUMP_DIR = "dump"
+
+
+def get_key(issue, filed):
+    structure = issue["fields"][filed]
+    if structure:
+        return structure["key"]
+    return None
 
 
 def process_issue(issue):
@@ -14,15 +20,24 @@ def process_issue(issue):
     cleaned = {
         "id": issue["id"],
         "key": issue["key"],
-        "assignee": issue["fields"]["assignee"]["key"],
+        "assignee": get_key(issue, "assignee"),
         "status": issue["fields"]["status"]["name"],
-        "reporter": issue["fields"]["reporter"]["key"],
+        "reporter": get_key(issue, "reporter"),
         "description": issue["fields"]["description"],
         "summary": issue["fields"]["summary"],
         # "comment": issue["fields"]["comment"],
     }
 
-    pprint(cleaned)
+    print("key: {}".format(cleaned["key"]))
+    print("summary:\n{}\n".format(cleaned["summary"]))
+    print("new summary:\n{}\n".format(" ".join(
+        process_text(cleaned["summary"]))
+    ))
+    print("description:\n{}\n".format(cleaned["description"]))
+    print("new description:\n{}\n".format(" ".join(
+        process_text(cleaned["description"])))
+    )
+    print("-" * 80)
 
 
 def get_text(issue):
@@ -62,16 +77,12 @@ def keep_token(tk):
 
 
 def process_text(text):
-    # print("processing text")
-    nltk.download('punkt')
-    nltk.download('stopwords')
-    nltk.download('wordnet')
-
     text = text.lower()
 
     no_code = text.replace("{code}", "")
+    no_under = no_code.replace("_", " ")
 
-    tokens = nltk.wordpunct_tokenize(no_code)
+    tokens = nltk.wordpunct_tokenize(no_under)
     clean_tokens = [t for t in tokens if keep_token(t)]
 
     # lemmanization
@@ -82,10 +93,11 @@ def process_text(text):
 
 
 def process_megatext(in_file="megatext.txt"):
+    nltk.download('punkt')
+    nltk.download('stopwords')
+    nltk.download('wordnet')
     with open(in_file, 'r') as inf:
         data = inf.read()
-        limit_line = len(data) // 10
-        # out = process_text(data[:limit_line])
         out = process_text(data)
 
     freq = nltk.FreqDist(out)
@@ -96,5 +108,5 @@ def process_megatext(in_file="megatext.txt"):
 
 
 if __name__ == "__main__":
-    # main()
-    process_megatext()
+    main()
+    # process_megatext()
