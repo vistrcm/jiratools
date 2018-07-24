@@ -1,5 +1,7 @@
-dump/
 .idea/
-megatext.txt
 .ipynb_checkpoints/
 __pycache__/
+
+megatext.txt
+dump/
+vocabulary.pkl
