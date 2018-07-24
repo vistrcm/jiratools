@@ -15,8 +15,6 @@ def get_key(issue, filed):
 
 
 def process_issue(issue):
-    print("processing {}".format(issue["key"]))
-
     cleaned = {
         "id": issue["id"],
         "key": issue["key"],
@@ -27,15 +25,18 @@ def process_issue(issue):
         "summary": issue["fields"]["summary"],
         # "comment": issue["fields"]["comment"],
     }
+    return cleaned
 
-    print("key: {}".format(cleaned["key"]))
-    print("summary:\n{}\n".format(cleaned["summary"]))
+
+def print_processed(issue):
+    print("key: {}".format(issue["key"]))
+    print("summary:\n{}\n".format(issue["summary"]))
     print("new summary:\n{}\n".format(" ".join(
-        process_text(cleaned["summary"]))
+        process_text(issue["summary"]))
     ))
-    print("description:\n{}\n".format(cleaned["description"]))
+    print("description:\n{}\n".format(issue["description"]))
     print("new description:\n{}\n".format(" ".join(
-        process_text(cleaned["description"])))
+        process_text(issue["description"])))
     )
     print("-" * 80)
 
@@ -45,11 +46,17 @@ def get_text(issue):
 
 
 def main():
-    files = os.listdir(DUMP_DIR)
+    process_dir(DUMP_DIR)
+
+
+def process_dir(directory):
+    files = os.listdir(directory)
+    issues = []
     for file in files:
         with open(os.path.join(DUMP_DIR, file), 'r') as json_data:
             issue = json.load(json_data)
-            process_issue(issue)
+            issues.extend(process_issue(issue))
+    return issues
 
 
 def get_megatext(out_file="megatext.txt"):
