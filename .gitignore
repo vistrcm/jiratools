@@ -4,4 +4,4 @@ __pycache__/
 
 megatext.txt
 dump/
-vocabulary.pkl
+*.pkl
