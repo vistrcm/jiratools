@@ -4,6 +4,10 @@ import os
 import nltk
 from nltk.corpus import stopwords
 
+nltk.download('punkt')
+nltk.download('stopwords')
+nltk.download('wordnet')
+
 DUMP_DIR = "dump"
 
 
@@ -100,9 +104,6 @@ def process_text(text):
 
 
 def process_megatext(in_file="megatext.txt"):
-    nltk.download('punkt')
-    nltk.download('stopwords')
-    nltk.download('wordnet')
     with open(in_file, 'r') as inf:
         data = inf.read()
         out = process_text(data)
