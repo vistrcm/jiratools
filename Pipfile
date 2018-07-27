@@ -6,6 +6,11 @@ name = "pypi"
 [packages]
 requests = "*"
 nltk = "*"
+pandas = "*"
+tensorflow = {file = "https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.9.0-py3-none-any.whl"}
+jupyter = "*"
+tensorflow-hub = "*"
+ipython = "*"
 
 [dev-packages]
 pylint = "*"
