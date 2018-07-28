@@ -5,11 +5,9 @@ import sys
 
 import numpy as np
 import pandas as pd
-import pip
 import tensorflow as tf
 import tensorflow_hub as hub
 
-import preprocessor
 from models.misc import vocabularies, maybe_process
 
 print(tf.__version__)
@@ -18,7 +16,7 @@ pd.options.display.max_rows = 10
 pd.options.display.float_format = '{:.1f}'.format
 
 DUMPDIR = "dump"
-OUTDIR = os.path.join("trained_models", __name__)
+OUTDIR = os.path.join("trained_models", "Linear")
 
 
 # Define your feature columns
@@ -54,8 +52,6 @@ def create_feature_cols(user_vocabulary):
 
 def add_more_features(df):
     # TODO: Add more features to the dataframe
-    df["summary_clean"] = df["summary"].map(lambda x: " ".join(preprocessor.process_text(x)))
-    df["description_clean"] = df["description"].map(lambda x: " ".join(preprocessor.process_text(x)))
     return df
 
 
@@ -90,7 +86,7 @@ def train_and_evaluate(output_dir, num_train_steps, assignee_vocabulary, user_vo
     tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
 
 
-def model_LinearClassifier(df):
+def model(df):
     user_vocabulary, assignee_vocabulary = vocabularies(df)
 
     # Now, split the data into two parts -- training and evaluation.
@@ -106,7 +102,9 @@ def model_LinearClassifier(df):
 
 if __name__ == "__main__":
     subprocess.check_call([sys.executable, '-m', 'pip', 'install', 'nltk', 'tensorflow-hub'])
+    print("loading data")
     data = maybe_process(os.path.join(DUMPDIR, "data.pkl"))
-    df = pd.DataFrame(data)
-    df = df.fillna("Unknown")
-    model_LinearClassifier(df)
+    print("loading data completed")
+    print("running model")
+    model(data)
+    print("running model completed")
