@@ -16,7 +16,8 @@ def maybe_process(store_file, dump_dir="dump/issues/", force=False):
     else:
         with open(store_file, 'rb') as data_file:
             df = pickle.load(data_file)
-        return df
+
+    return df
 
 
 def extend_df(df):
