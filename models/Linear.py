@@ -54,8 +54,8 @@ def create_feature_cols(user_vocabulary):
 
 def add_more_features(df):
     # TODO: Add more features to the dataframe
-    df["summary_clean"] = df["summary"].apply(lambda x: " ".join(preprocessor.process_text(x)))
-    df["description_clean"] = df["description"].apply(lambda x: " ".join(preprocessor.process_text(x)))
+    df["summary_clean"] = df["summary"].map(lambda x: " ".join(preprocessor.process_text(x)))
+    df["description_clean"] = df["description"].map(lambda x: " ".join(preprocessor.process_text(x)))
     return df
 
 
