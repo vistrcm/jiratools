@@ -21,15 +21,16 @@ def get_key(issue, filed):
 
 def get_most_active(issue):
     """Find most active user in comments. Return assignee if no comments"""
-    comments = issue["comment"]["comments"]
+    comments = issue["fields"]["comment"]["comments"]
     if not comments:
-        return issue["assignee"]
+        return issue["fields"]["assignee"]
 
     counter = Counter([comment["author"]["key"] for comment in comments])
     return counter.most_common(1)[0][1]
 
 
 def process_issue(issue):
+    print("processing {}".format(issue["key"]))
     most_active = get_most_active(issue)
     cleaned = {
         "id": issue["id"],
