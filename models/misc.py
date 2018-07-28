@@ -32,6 +32,7 @@ def extend_df(df):
 
 
 def vocabularies(df):
-    user_vocabulary = pd.concat([df["assignee"], df["reporter"]]).unique()
+    user_vocabulary = pd.concat([df["assignee"], df["reporter"], df["most_active"]]).unique()
     assignee_vocabulary = df["assignee"].unique()
-    return user_vocabulary, assignee_vocabulary
+    most_active_vocabulary = df["most_active"].unique()
+    return user_vocabulary, assignee_vocabulary, most_active_vocabulary

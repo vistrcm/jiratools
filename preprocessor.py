@@ -26,7 +26,7 @@ def get_most_active(issue):
         return issue["fields"]["assignee"]
 
     counter = Counter([comment["author"]["key"] for comment in comments])
-    return counter.most_common(1)[0][1]
+    return counter.most_common(1)[0][0]
 
 
 def process_issue(issue):

@@ -21,7 +21,7 @@ OUTDIR = os.path.join("trained_models", "DNN")
 
 
 def model(df):
-    user_vocabulary, assignee_vocabulary = vocabularies(df)
+    user_vocabulary, assignee_vocabulary, most_active_vocabulary = vocabularies(df)
     os.makedirs(DUMPDIR, exist_ok=True)
 
     with open(os.path.join(DUMPDIR, "vocabulary.pkl"), 'wb') as vocabulary_file:
@@ -37,7 +37,7 @@ def model(df):
 
     # Run the model
     shutil.rmtree(OUTDIR, ignore_errors=True)
-    train_and_evaluate(OUTDIR, 1000, assignee_vocabulary, user_vocabulary, traindf, evaldf)
+    train_and_evaluate(OUTDIR, 1000, most_active_vocabulary, user_vocabulary, traindf, evaldf)
 
 
 def train_and_evaluate(output_dir, num_train_steps, assignee_vocabulary, user_vocabulary, traindf, evaldf):
@@ -74,7 +74,7 @@ def make_input_fn(df, num_epochs):
     """Create pandas input function"""
     return tf.estimator.inputs.pandas_input_fn(
         x=add_more_features(df),
-        y=df["assignee"],
+        y=df["most_active"],
         batch_size=128,
         num_epochs=num_epochs,
         shuffle=True,
