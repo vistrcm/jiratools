@@ -46,7 +46,7 @@ def train_and_evaluate(output_dir, num_train_steps, assignee_vocabulary, user_vo
     estimator = tf.estimator.DNNClassifier(
         model_dir=output_dir,
         feature_columns=create_feature_cols(user_vocabulary),
-        hidden_units=[200, 100, 50],
+        hidden_units=[100, 70, 50, 25],
         n_classes=len(assignee_vocabulary.tolist()),
         label_vocabulary=assignee_vocabulary.tolist(),
     )
