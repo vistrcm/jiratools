@@ -1,5 +1,6 @@
 import json
 import os
+from collections import Counter
 
 import nltk
 from nltk.corpus import stopwords
@@ -18,11 +19,23 @@ def get_key(issue, filed):
     return None
 
 
+def get_most_active(issue):
+    """Find most active user in comments. Return assignee if no comments"""
+    comments = issue["comment"]["comments"]
+    if not comments:
+        return issue["assignee"]
+
+    counter = Counter([comment["author"]["key"] for comment in comments])
+    return counter.most_common(1)[0][1]
+
+
 def process_issue(issue):
+    most_active = get_most_active(issue)
     cleaned = {
         "id": issue["id"],
         "key": issue["key"],
         "assignee": get_key(issue, "assignee"),
+        "most_active": most_active,
         "status": issue["fields"]["status"]["name"],
         "reporter": get_key(issue, "reporter"),
         "description": issue["fields"]["description"],
