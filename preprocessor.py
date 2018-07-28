@@ -57,7 +57,7 @@ def process_dir(directory):
     files = os.listdir(directory)
     issues = []
     for file in files:
-        with open(os.path.join(DUMP_DIR, file), 'r') as json_data:
+        with open(os.path.join(directory, file), 'r') as json_data:
             issue = json.load(json_data)
             issues.append(process_issue(issue))
     return issues
