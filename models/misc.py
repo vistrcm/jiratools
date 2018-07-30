@@ -20,7 +20,7 @@ def maybe_process(store_file, dump_dir="dump/issues/", force=False):
     return df
 
 
-def extend_df(df):
+def extend_df(df: pd.DataFrame) -> pd.DataFrame:
     print("extending DF")
     df = df.fillna("Unknown")
     df["summary_clean"] = df["summary"].map(lambda x: " ".join(preprocessor.process_text(x)))
