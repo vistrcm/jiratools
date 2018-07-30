@@ -23,7 +23,7 @@ def get_most_active(issue):
     """Find most active user in comments. Return assignee if no comments"""
     comments = issue["fields"]["comment"]["comments"]
     if not comments:
-        return issue["fields"]["assignee"]
+        return get_key(issue, "assignee")
 
     counter = Counter([comment["author"]["key"] for comment in comments])
     return counter.most_common(1)[0][0]
