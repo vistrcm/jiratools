@@ -86,7 +86,7 @@ def train_and_evaluate(output_dir, num_train_steps, assignee_vocabulary, user_vo
     tf.estimator.train_and_evaluate(estimator, train_spec, eval_spec)
 
 
-def model(df):
+def model(df, force_clean=False):
     user_vocabulary, assignee_vocabulary, most_active_vocabulary = vocabularies(df)
 
     # Now, split the data into two parts -- training and evaluation.
@@ -96,7 +96,8 @@ def model(df):
     evaldf = df[~msk]
 
     # Run the model
-    shutil.rmtree(OUTDIR, ignore_errors=True)
+    if force_clean:
+        shutil.rmtree(OUTDIR, ignore_errors=True)
     train_and_evaluate(OUTDIR, 1000, most_active_vocabulary, user_vocabulary, traindf, evaldf)
 
 
