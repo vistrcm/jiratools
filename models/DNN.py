@@ -38,7 +38,7 @@ def model(df, force_clean=False):
     # Run the model
     if force_clean:
         shutil.rmtree(OUTDIR, ignore_errors=True)
-    train_and_evaluate(OUTDIR, 1000, most_active_vocabulary, user_vocabulary, traindf, evaldf)
+    train_and_evaluate(OUTDIR, 1500, most_active_vocabulary, user_vocabulary, traindf, evaldf)
 
 
 def train_and_evaluate(output_dir, num_train_steps, assignee_vocabulary, user_vocabulary, traindf, evaldf):
