@@ -4,16 +4,14 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-requests = "*"
+tensorflow = "*"
 nltk = "*"
 pandas = "*"
-tensorflow = {file = "https://storage.googleapis.com/tensorflow/mac/cpu/tensorflow-1.9.0-py3-none-any.whl"}
 jupyter = "*"
 tensorflow-hub = "*"
 ipython = "*"
 
 [dev-packages]
-pylint = "*"
 
 [requires]
-python_version = "3.7"
+python_version = "2.7"
