@@ -1,8 +1,11 @@
 import json
 import os
+import pickle
 from collections import Counter
 
 import nltk
+import numpy as np
+import pandas as pd
 from nltk.corpus import stopwords
 
 nltk.download('punkt')
@@ -127,6 +130,54 @@ def process_megatext(in_file="megatext.txt"):
         print("{}: {}".format(val, key))
 
     # print(out)
+
+
+def maybe_process(store_file, dump_dir="dump/issues/", force=False):
+    if force or not os.path.exists(store_file):
+        data = process_dir(dump_dir)
+        df = pd.DataFrame(data)
+        df = extend_df(df)
+        with open(store_file, 'wb') as data_file:
+            pickle.dump(df, data_file)
+    else:
+        with open(store_file, 'rb') as data_file:
+            df = pickle.load(data_file)
+    return df
+
+
+def split_data(df, seed=1, limit=0.8):
+    # Now, split the data into two parts -- training and evaluation.
+    np.random.seed(seed=seed)  # makes result reproducible
+    msk = np.random.rand(len(df)) < limit
+    traindf = df[msk]
+    evaldf = df[~msk]
+    return traindf, evaldf
+
+
+def extend_df(df):
+    print("extending DF")
+    df = df.fillna("Unknown")
+    df["summary_clean"] = df["summary"].map(lambda x: " ".join(process_text(x)))
+    df["description_clean"] = df["description"].map(lambda x: " ".join(process_text(x)))
+    del df["summary"]
+    del df["description"]
+    print("extending DF done")
+    return df
+
+
+def vocabularies(df):
+    user_vocabulary = pd.concat([df["assignee"], df["reporter"], df["most_active"]]).unique()
+    assignee_vocabulary = df["assignee"].unique()
+    most_active_vocabulary = df["most_active"].unique()
+    return user_vocabulary, assignee_vocabulary, most_active_vocabulary
+
+
+def prepare_csvs():
+    df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
+    train_df, eval_df = split_data(df)
+    train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'))
+    eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'))
+    df.to_csv(os.path.join(DUMP_DIR, 'all.csv'))
 
 
 if __name__ == "__main__":

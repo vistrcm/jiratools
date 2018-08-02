@@ -9,7 +9,7 @@ import pandas as pd
 import tensorflow as tf
 import tensorflow_hub as hub
 
-from models.misc import vocabularies, maybe_process
+from preprocessor import maybe_process, vocabularies
 
 print(tf.__version__)
 tf.logging.set_verbosity(tf.logging.INFO)
