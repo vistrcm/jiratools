@@ -42,8 +42,8 @@ def process_issue(issue):
         "most_active": most_active,
         "status": issue["fields"]["status"]["name"],
         "reporter": get_key(issue, "reporter"),
-        "description": issue["fields"]["description"],
-        "summary": issue["fields"]["summary"],
+        "description": unicode(issue["fields"]["description"]),
+        "summary": unicode(issue["fields"]["summary"]),
         # "comment": issue["fields"]["comment"],
     }
     return cleaned
@@ -181,5 +181,6 @@ def prepare_csvs():
 
 
 if __name__ == "__main__":
-    main()
+    # main()
+    prepare_csvs()
     # process_megatext()
