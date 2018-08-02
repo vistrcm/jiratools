@@ -42,8 +42,8 @@ def process_issue(issue):
         "most_active": most_active,
         "status": issue["fields"]["status"]["name"],
         "reporter": get_key(issue, "reporter"),
-        "description": unicode(issue["fields"]["description"]),
-        "summary": unicode(issue["fields"]["summary"]),
+        "description": issue["fields"]["description"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
+        "summary": issue["fields"]["summary"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
         # "comment": issue["fields"]["comment"],
     }
     return cleaned
