@@ -93,13 +93,13 @@ def get_megatext(out_file="megatext.txt"):
 
 
 def keep_token(tk):
+    if len(tk) < 2:
+        return False
     if not tk.isalnum():
         return False
     if tk.isdigit():
         return False
     if tk in stopwords.words('english'):
-        return False
-    if len(tk) < 2:
         return False
     return True
 
