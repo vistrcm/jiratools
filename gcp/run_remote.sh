@@ -3,7 +3,7 @@ set -x
 set -v
 set -e
 
-JOB_NAME=jiratrain_lin_simple_02
+JOB_NAME=jiratrain_lin_simple_05
 REGION=us-central1
 
 BUCKET_PATH=$BUCKET_NAME/ml
@@ -18,11 +18,13 @@ EVAL_DATA=gs://$BUCKET_PATH/data/eval.csv
 OUTPUT_PATH=gs://$BUCKET_PATH/$JOB_NAME
 
 gcloud ml-engine jobs submit training $JOB_NAME \
+    --stream-logs \
     --job-dir $OUTPUT_PATH \
     --runtime-version 1.8 \
     --module-name trainer.task \
     --package-path trainer/ \
     --region $REGION \
+    --scale-tier STANDARD_1 \
     -- \
     --train-files $TRAIN_DATA \
     --eval-files $EVAL_DATA \
