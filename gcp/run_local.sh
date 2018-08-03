@@ -11,6 +11,7 @@ gcloud ml-engine local train \
     --module-name trainer.task \
     --package-path trainer/ \
     --job-dir $MODEL_DIR \
+    --distributed \
     -- \
     --train-files $TRAIN_DATA \
     --eval-files $EVAL_DATA \
