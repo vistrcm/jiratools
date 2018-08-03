@@ -25,13 +25,24 @@ def get_key(issue, filed):
     return None
 
 
-def get_most_active(issue):
+def get_most_active(issue, stop_list=None):
     """Find most active user in comments. Return assignee if no comments"""
+    if not stop_list:
+        stop_list = []
+
     comments = issue["fields"]["comment"]["comments"]
-    if not comments:
+    if not comments:  # no comments in the issue
         return get_key(issue, "assignee")
 
-    counter = Counter([comment["author"]["key"] for comment in comments])
+    authors = [comment["author"]["key"] for comment in comments]
+    # remove stop words from authors
+    cleaned_authors = [author for author in authors if author not in stop_list]
+
+    # list may became empty
+    if not cleaned_authors:  # no comments in the issue
+        return get_key(issue, "assignee")
+
+    counter = Counter(cleaned_authors)
     return counter.most_common(1)[0][0]
 
 
