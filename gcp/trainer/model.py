@@ -48,12 +48,12 @@ INPUT_COLUMNS = [
     #     module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
     #     trainable=True,
     # ),
-    #
-    # hub.text_embedding_column(
-    #     key="summary_clean",
-    #     module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
-    #     trainable=True,
-    # ),
+
+    hub.text_embedding_column(
+        key="summary_clean",
+        module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
+        trainable=True,
+    ),
 ]
 
 UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - \
@@ -101,19 +101,18 @@ SERVING_FUNCTIONS = {
 }
 
 
-def parse_csv(row_string_tensor):
-    """Takes the string input tensor and returns a dict of rank-2 tensors.
+def parse_csv(rows_string_tensor):
+    """Takes the string input tensor and returns a dict of rank-2 tensors."""
 
-    Takes a rank-1 tensor and converts it into rank-2 tensor
-    example if data is ['csv,line,1', 'csv,line,2', ..] to
-    [['csv,line,1'], ['csv,line,2']] which after parsing will result in a
-    tuple of tensors: [['csv'], ['csv']], [['line'], ['line']], [[1], [2]]
-    """
-    row_columns = tf.expand_dims(row_string_tensor, -1)
+    # Takes a rank-1 tensor and converts it into rank-2 tensor
+    # Example if the data is ['csv,line,1', 'csv,line,2', ..] to
+    # [['csv,line,1'], ['csv,line,2']] which after parsing will result in a
+    # tuple of tensors: [['csv'], ['csv']], [['line'], ['line']], [[1], [2]]
+    row_columns = tf.expand_dims(rows_string_tensor, -1)
     columns = tf.decode_csv(row_columns, record_defaults=CSV_COLUMN_DEFAULTS)
     features = dict(zip(CSV_COLUMNS, columns))
 
-    # remove unused columns
+    # Remove unused columns
     for col in UNUSED_COLUMNS:
         features.pop(col)
     return features
@@ -122,12 +121,12 @@ def parse_csv(row_string_tensor):
 def parse_label_column(label_string_tensor):
     """Parses a string tensor into the label tensor
     Args:
-        label_string_tensor: Tensor of dtype string. Result of parsing the
-        CSV column specified by LABEL_COLUMN
+      label_string_tensor: Tensor of dtype string. Result of parsing the
+      CSV column specified by LABEL_COLUMN
     Returns:
-        A Tensor of the same shape as label_string_tensor, should return
-        an int64 Tensor representing the label index for classification tasks,
-        and a float32 Tensor representing the value for a regression task.
+      A Tensor of the same shape as label_string_tensor, should return
+      an int64 Tensor representing the label index for classification tasks,
+      and a float32 Tensor representing the value for a regression task.
     """
     # Build a Hash Table inside the graph
     table = tf.contrib.lookup.index_table_from_tensor(tf.constant(LABELS))
@@ -141,33 +140,34 @@ def input_fn(filenames,
              shuffle=True,
              skip_header_lines=0,
              batch_size=200):
-    """
-    Args:
-      filenames: [str] list of CSV files to read data from.
-      num_epochs: int how many times through to read the data.
-        If None will loop through data indefinitely
-      shuffle: bool, whether or not to randomize the order of data.
-        Controls randomization of both file order and line order within
-        files.
-      skip_header_lines: int set to non-zero in order to skip header lines
-        in CSV files.
-      batch_size: int First dimension size of the Tensors returned by
-        input_fn
-    Returns:
-      A (features, indices) tuple where features is a dictionary of
-        Tensors, and indices is a single Tensor of label indices.
-    """
+    """Generates features and labels for training or evaluation.
+    This uses the input pipeline based approach using file name queue
+    to read data so that entire data is not loaded in memory.
 
+    Args:
+        filenames: [str] list of CSV files to read data from.
+        num_epochs: int how many times through to read the data.
+          If None will loop through data indefinitely
+        shuffle: bool, whether or not to randomize the order of data.
+          Controls randomization of both file order and line order within
+          files.
+        skip_header_lines: int set to non-zero in order to skip header lines
+          in CSV files.
+        batch_size: int First dimension size of the Tensors returned by
+          input_fn
+    Returns:
+        A (features, indices) tuple where features is a dictionary of
+          Tensors, and indices is a single Tensor of label indices.
+    """
     filename_dataset = tf.data.Dataset.from_tensor_slices(filenames)
     if shuffle:
         # Process the files in a random order.
         filename_dataset = filename_dataset.shuffle(len(filenames))
 
     # For each filename, parse it into one element per line, and skip the header
-    # if necessary
+    # if necessary.
     dataset = filename_dataset.flat_map(
-        lambda filename: tf.data.TextLineDataset(filename).skip(skip_header_lines)
-    )
+        lambda filename: tf.data.TextLineDataset(filename).skip(skip_header_lines))
 
     dataset = dataset.map(parse_csv)
     if shuffle:
@@ -185,5 +185,5 @@ def build_estimator(embedding_size, hidden_units, config):
         config=config,
         feature_columns=INPUT_COLUMNS,
         n_classes=len(LABELS),
-        # label_vocabulary=LABELS,
+        label_vocabulary=LABELS,
     )
