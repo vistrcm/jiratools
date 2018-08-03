@@ -38,8 +38,8 @@ def process_issue(issue):
     cleaned = {
         "id": issue["id"],
         "key": issue["key"],
-        "assignee": get_key(issue, "assignee"),
-        "most_active": most_active,
+        "assignee": get_key(issue, "assignee").lower(),
+        "most_active": most_active.lower(),
         "status": issue["fields"]["status"]["name"],
         "reporter": get_key(issue, "reporter"),
         "description": issue["fields"]["description"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
@@ -156,6 +156,7 @@ def split_data(df, seed=1, limit=0.8):
 
 def extend_df(df):
     print("extending DF")
+    df = df.set_index('id')
     df = df.fillna("Unknown")
     df["summary_clean"] = df["summary"].map(lambda x: " ".join(process_text(x)))
     df["description_clean"] = df["description"].map(lambda x: " ".join(process_text(x)))
