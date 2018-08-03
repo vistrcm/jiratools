@@ -9,3 +9,5 @@ dump/
 
 # ignore examples
 cloudml-samples-master/
+
+*.pyc
