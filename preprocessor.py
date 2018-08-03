@@ -17,6 +17,9 @@ DUMP_DIR = "dump"
 
 def get_key(issue, filed):
     structure = issue["fields"][filed]
+    if not structure:
+        return "unknown"
+
     if structure:
         return structure["key"]
     return None
