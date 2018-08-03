@@ -5,3 +5,6 @@ __pycache__/
 megatext.txt
 dump/
 *.pkl
+
+# ignore examples
+cloudml-samples-master/
