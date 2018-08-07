@@ -50,21 +50,28 @@ INPUT_COLUMNS = [
     # ),
 
     hub.text_embedding_column(
-        key="summary_clean",
+        "summary_clean",
         module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
         trainable=True,
     ),
 ]
 
-UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - \
+INPUT_COLUMNS_NAMES = ["reporter", "summary_clean"]
+
+# UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - {col.key for col in INPUT_COLUMNS} - \
+#                  {LABEL_COLUMN}
+UNUSED_COLUMNS = set(CSV_COLUMNS) - {col for col in INPUT_COLUMNS_NAMES} - \
                  {LABEL_COLUMN}
+
+print("SV ccc: ", {col.key for col in INPUT_COLUMNS})
+print("SV UNUSED_COLUMNS: ", UNUSED_COLUMNS)
 
 
 def json_serving_input_fn():
     """Build the servin inputs."""
     inputs = {}
-    for feat in INPUT_COLUMNS:
-        inputs[feat.name] = tf.placeholder(shape=[None], dtype=feat.dtype)
+    for counter, feature_name in enumerate(INPUT_COLUMNS_NAMES):
+        inputs[feature_name] = tf.placeholder(shape=[None], dtype=INPUT_COLUMNS[counter].dtype)
     return tf.estimator.export.ServingInputReceiver(inputs, inputs)
 
 
@@ -176,6 +183,7 @@ def input_fn(filenames,
     dataset = dataset.batch(batch_size)
     iterator = dataset.make_one_shot_iterator()
     features = iterator.get_next()
+    tf.Print(features["most_active"], [features["most_active"]], "hello SV:")
     return features, parse_label_column(features.pop(LABEL_COLUMN))
 
 
@@ -185,5 +193,5 @@ def build_estimator(embedding_size, hidden_units, config):
         config=config,
         feature_columns=INPUT_COLUMNS,
         n_classes=len(LABELS),
-        label_vocabulary=LABELS,
+        # label_vocabulary=LABELS,
     )
