@@ -42,6 +42,6 @@ gcloud ml-engine jobs submit training $JOB_NAME \
     -- \
     --train-files $TRAIN_DATA \
     --eval-files $EVAL_DATA \
-    --train-steps 5000 \
+    --train-steps 50000 \
     --eval-steps 100 \
     --verbosity DEBUG
