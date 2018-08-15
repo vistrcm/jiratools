@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+export TFHUB_CACHE_DIR=tfhub_models
+
 TRAIN_DATA=$(pwd)/../dump/train.csv
 EVAL_DATA=$(pwd)/../dump/eval.csv
 
