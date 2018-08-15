@@ -3,7 +3,7 @@ set -x
 set -v
 set -e
 
-JOB_NAME=jiratrain_lin_simple_`date +%F%T`
+JOB_NAME=jiratrain_lin_simple_`date +%F_%T`
 REGION=us-central1
 
 BUCKET_PATH=$BUCKET_NAME/ml
