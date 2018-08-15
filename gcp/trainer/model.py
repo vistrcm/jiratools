@@ -48,15 +48,16 @@ INPUT_COLUMNS = [
     #     module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
     #     trainable=True,
     # ),
-
-    hub.text_embedding_column(
-        "summary_clean",
-        module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
-        trainable=True,
-    ),
+    #
+    # hub.text_embedding_column(
+    #     "summary_clean",
+    #     module_spec="https://tfhub.dev/google/Wiki-words-250-with-normalization/1",
+    #     trainable=True,
+    # ),
 ]
 
-INPUT_COLUMNS_NAMES = ["reporter", "summary_clean"]
+# INPUT_COLUMNS_NAMES = ["reporter", "summary_clean", "description_clean"]
+INPUT_COLUMNS_NAMES = ["reporter"]
 
 # UNUSED_COLUMNS = set(CSV_COLUMNS) - {col.name for col in INPUT_COLUMNS} - {col.key for col in INPUT_COLUMNS} - \
 #                  {LABEL_COLUMN}
@@ -67,28 +68,38 @@ print("SV ccc: ", {col.key for col in INPUT_COLUMNS})
 print("SV UNUSED_COLUMNS: ", UNUSED_COLUMNS)
 
 
+# def json_serving_input_fn():
+#     """Build the servin inputs."""
+#     inputs = {}
+#     for counter, feature_name in enumerate(INPUT_COLUMNS_NAMES):
+#         if feature_name in ["summary_clean", "description_clean"]:
+#             inputs[feature_name] = tf.placeholder(shape=[None], dtype=tf.string)
+#         else:
+#             inputs[feature_name] = tf.placeholder(shape=[None], dtype=INPUT_COLUMNS[counter].dtype)
+#
+#     return tf.estimator.export.ServingInputReceiver(inputs, inputs)
+
+
+# def json_serving_input_fn():
+#     feature_placeholders = {
+#         'reporter': tf.placeholder(tf.string, [None]),
+#         # 'description_clean': tf.placeholder(tf.string, [None]),
+#         # 'summary_clean': tf.placeholder(tf.string, [None]),
+#     }
+#     # You can transforma data here from the input format to the format expected by your model.
+#     features = feature_placeholders  # no transformation needed
+#     return tf.estimator.export.ServingInputReceiver(features, feature_placeholders)
+#     # return tf.estimator.export.build_raw_serving_input_receiver_fn(features)()
+
+
 def json_serving_input_fn():
-    """Build the servin inputs."""
-    inputs = {}
-    for counter, feature_name in enumerate(INPUT_COLUMNS_NAMES):
-        inputs[feature_name] = tf.placeholder(shape=[None], dtype=INPUT_COLUMNS[counter].dtype)
-    return tf.estimator.export.ServingInputReceiver(inputs, inputs)
+    feature_placeholders = {
+        column.name: tf.placeholder(tf.string, [None]) for column in INPUT_COLUMNS
+    }
 
+    features = feature_placeholders
+    return tf.estimator.export.ServingInputReceiver(features, feature_placeholders)
 
-# def example_serving_input_fn():
-#     """Build the serving inputs."""
-#     example_bytestring = tf.placeholder(
-#         shape=[None],
-#         dtype=tf.string,
-#     )
-#     feature_scalars = tf.parse_example(
-#         example_bytestring,
-#         tf.feature_column.make_parse_example_spec(INPUT_COLUMNS)
-#     )
-#     return tf.estimator.export.ServingInputReceiver(
-#         features,
-#         {'example_proto': example_bytestring}
-#     )
 
 def csv_serving_input_fn():
     """Build the serving inputs."""
@@ -183,8 +194,8 @@ def input_fn(filenames,
     dataset = dataset.batch(batch_size)
     iterator = dataset.make_one_shot_iterator()
     features = iterator.get_next()
-    tf.Print(features["most_active"], [features["most_active"]], "hello SV:")
-    return features, parse_label_column(features.pop(LABEL_COLUMN))
+    # return features, parse_label_column(features.pop(LABEL_COLUMN))
+    return features, features.pop(LABEL_COLUMN)
 
 
 def build_estimator(embedding_size, hidden_units, config):
@@ -193,5 +204,5 @@ def build_estimator(embedding_size, hidden_units, config):
         config=config,
         feature_columns=INPUT_COLUMNS,
         n_classes=len(LABELS),
-        # label_vocabulary=LABELS,
+        label_vocabulary=LABELS,
     )
