@@ -17,6 +17,6 @@ gcloud ml-engine local train \
     -- \
     --train-files $TRAIN_DATA \
     --eval-files $EVAL_DATA \
-    --train-steps 1000 \
+    --train-steps 5000 \
     --eval-steps 100 \
     --verbosity DEBUG
