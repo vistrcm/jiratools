@@ -53,7 +53,9 @@ def run_experiment(hparams):
                                           model.SERVING_FUNCTIONS[hparams.export_format])
     eval_spec = tf.estimator.EvalSpec(eval_input,
                                       steps=hparams.eval_steps,
-                                      exporters=[exporter],
+                                      start_delay_secs=hparams.eval_delay_secs,
+                                      throttle_secs=hparams.min_eval_frequency,
+                                      exporters=exporter,
                                       name='jirapred-eval'
                                       )
 
@@ -116,6 +118,18 @@ if __name__ == '__main__':
         help='Batch size for evaluation steps',
         type=int,
         default=40
+    )
+    parser.add_argument(
+        '--eval_delay_secs',
+        help='How long to wait before running first evaluation',
+        type=int,
+        default=1,
+    )
+    parser.add_argument(
+        '--min_eval_frequency',
+        help='Seconds between evaluations',
+        type=int,
+        default=2,
     )
 
     # Training arguments
