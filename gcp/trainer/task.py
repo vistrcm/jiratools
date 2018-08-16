@@ -60,7 +60,8 @@ def run_experiment(hparams):
                                       )
 
     run_config = tf.estimator.RunConfig(
-        session_config=_get_session_config_from_env_var()
+        session_config=_get_session_config_from_env_var(),
+        save_checkpoints_steps=100,
     )
     run_config = run_config.replace(model_dir=hparams.job_dir)
     print("model dir {}".format(run_config.model_dir))
