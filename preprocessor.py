@@ -46,8 +46,10 @@ def get_most_active(issue, stop_list=None):
     return counter.most_common(1)[0][0]
 
 
-def process_issue(issue):
-    print("processing {}".format(issue["key"]))
+def process_issue(issue, verbose=False):
+    if verbose:
+        print("processing {}".format(issue["key"]))
+
     most_active = get_most_active(issue)
     cleaned = {
         "id": issue["id"],
@@ -168,15 +170,17 @@ def split_data(df, seed=1, limit=0.8):
     return traindf, evaldf
 
 
-def extend_df(df):
-    print("extending DF")
+def extend_df(df, verbose=False):
+    if verbose:
+        print("extending DF")
     df = df.set_index('id')
     df = df.fillna("Unknown")
     df["summary_clean"] = df["summary"].map(lambda x: " ".join(process_text(x)))
     df["description_clean"] = df["description"].map(lambda x: " ".join(process_text(x)))
     del df["summary"]
     del df["description"]
-    print("extending DF done")
+    if verbose:
+        print("extending DF done")
     return df
 
 
