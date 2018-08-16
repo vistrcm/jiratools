@@ -199,7 +199,13 @@ def prepare_csvs():
     df.to_csv(os.path.join(DUMP_DIR, 'all.csv'))
 
 
+def prepare_labels():
+    df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
+    print(df.head())
+
 if __name__ == "__main__":
     # main()
-    prepare_csvs()
+    # prepare_csvs()
     # process_megatext()
+
+    prepare_labels()
