@@ -35,11 +35,12 @@ LABELS_REPORTER = labels.LABELS_REPORTER
 # Define the initial ingestion of each feature used by your model.
 # Additionally, provide metadata about the feature.
 INPUT_COLUMNS = [
-
-    tf.feature_column.categorical_column_with_vocabulary_list(
-        "reporter",
-        vocabulary_list=LABELS,
-        # default_value=0
+    tf.feature_column.indicator_column(
+        tf.feature_column.categorical_column_with_vocabulary_list(
+            "reporter",
+            vocabulary_list=LABELS,
+            # default_value=0
+        )
     ),
 
 
@@ -64,7 +65,7 @@ INPUT_COLUMNS_NAMES = ["reporter"]
 UNUSED_COLUMNS = set(CSV_COLUMNS) - {col for col in INPUT_COLUMNS_NAMES} - \
                  {LABEL_COLUMN}
 
-print("SV ccc: ", {col.key for col in INPUT_COLUMNS})
+# print("SV ccc: ", {col.key for col in INPUT_COLUMNS})
 print("SV UNUSED_COLUMNS: ", UNUSED_COLUMNS)
 
 
@@ -198,11 +199,21 @@ def input_fn(filenames,
     return features, features.pop(LABEL_COLUMN)
 
 
-def build_estimator(embedding_size, hidden_units, config):
+def build_estimator_linear(embedding_size, hidden_units, config):
     """Build model"""
     return tf.estimator.LinearClassifier(
         config=config,
         feature_columns=INPUT_COLUMNS,
+        n_classes=len(LABELS),
+        label_vocabulary=LABELS,
+    )
+
+def build_estimator(embedding_size, hidden_units, config):
+    """Build model"""
+    return tf.estimator.DNNClassifier(
+        config=config,
+        feature_columns=INPUT_COLUMNS,
+        hidden_units=hidden_units,
         n_classes=len(LABELS),
         label_vocabulary=LABELS,
     )
