@@ -3,7 +3,7 @@ set -x
 set -v
 set -e
 
-JOB_NAME=jiratrain_lin_simple_`date +%Y%m%d%H%M`
+JOB_NAME=jiratrain_dnn_simple_`date +%Y%m%d%H%M`
 REGION=us-central1
 
 BUCKET_PATH=$BUCKET_NAME/ml
@@ -42,6 +42,6 @@ gcloud ml-engine jobs submit training $JOB_NAME \
     -- \
     --train-files $TRAIN_DATA \
     --eval-files $EVAL_DATA \
-    --train-steps 50000 \
+    --train-steps 500000 \
     --eval-steps 100 \
     --verbosity DEBUG
