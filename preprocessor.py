@@ -87,7 +87,6 @@ def process_dir(directory):
     files = os.listdir(directory)
     issues = []
     for json_file in files:
-        print("reading {}".format(json_file))
         with open(os.path.join(directory, json_file), 'r') as json_data:
             issue = json.load(json_data)
             issues.append(process_issue(issue))
