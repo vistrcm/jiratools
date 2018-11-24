@@ -58,7 +58,8 @@ def process_issue(issue, verbose=False):
         "most_active": most_active.lower(),
         "status": issue["fields"]["status"]["name"],
         "reporter": get_key(issue, "reporter"),
-        "description": issue["fields"]["description"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
+        # decode - hack to avoid strange symbols
+        "description": issue["fields"]["description"].encode('unicode-escape').decode('utf-8'),
         "summary": issue["fields"]["summary"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
         # "comment": issue["fields"]["comment"],
     }
@@ -82,16 +83,11 @@ def get_text(issue):
     return "\n\n".join([issue["fields"]["summary"], issue["fields"]["description"]])
 
 
-def main():
-    prepare_csvs()
-    prepare_labels()
-
-
 def process_dir(directory):
     files = os.listdir(directory)
     issues = []
-    for file in files:
-        with open(os.path.join(directory, file), 'r') as json_data:
+    for json_file in files:
+        with open(os.path.join(directory, json_file), 'r') as json_data:
             issue = json.load(json_data)
             issues.append(process_issue(issue))
     return issues
@@ -190,8 +186,7 @@ def vocabularies(df):
     return user_vocabulary, assignee_vocabulary, most_active_vocabulary
 
 
-def prepare_csvs():
-    df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
+def prepare_csvs(df):
     train_df, eval_df = split_data(df)
     train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'))
     eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'))
@@ -201,6 +196,12 @@ def prepare_csvs():
 def prepare_labels():
     df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
     print(df.head())
+
+
+def main():
+    df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
+    prepare_csvs(df)
+    prepare_labels()
 
 
 if __name__ == "__main__":
