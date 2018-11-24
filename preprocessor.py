@@ -83,7 +83,8 @@ def get_text(issue):
 
 
 def main():
-    process_dir(DUMP_DIR)
+    prepare_csvs()
+    prepare_labels()
 
 
 def process_dir(directory):
@@ -99,8 +100,8 @@ def process_dir(directory):
 def get_megatext(out_file="megatext.txt"):
     megatext = ""
     files = os.listdir(DUMP_DIR)
-    for file in files:
-        with open(os.path.join(DUMP_DIR, file), 'r') as json_data:
+    for json_file in files:
+        with open(os.path.join(DUMP_DIR, json_file), 'r') as json_data:
             issue = json.load(json_data)
             megatext += get_text(issue)
     with open(out_file, "w") as out:
@@ -144,8 +145,6 @@ def process_megatext(in_file="megatext.txt"):
     freq = nltk.FreqDist(out)
     for key, val in freq.items():
         print("{}: {}".format(val, key))
-
-    # print(out)
 
 
 def maybe_process(store_file, dump_dir="dump/issues/", force=False):
@@ -203,9 +202,6 @@ def prepare_labels():
     df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
     print(df.head())
 
-if __name__ == "__main__":
-    # main()
-    # prepare_csvs()
-    # process_megatext()
 
-    prepare_labels()
+if __name__ == "__main__":
+    main()
