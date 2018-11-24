@@ -87,6 +87,7 @@ def process_dir(directory):
     files = os.listdir(directory)
     issues = []
     for json_file in files:
+        print("reading {}".format(json_file))
         with open(os.path.join(directory, json_file), 'r') as json_data:
             issue = json.load(json_data)
             issues.append(process_issue(issue))
@@ -145,9 +146,13 @@ def process_megatext(in_file="megatext.txt"):
 
 def maybe_process(store_file, dump_dir="dump/issues/", force=False):
     if force or not os.path.exists(store_file):
+        print("processing json dump")
         data = process_dir(dump_dir)
+        print("preparing dataframe")
         df = pd.DataFrame(data)
+        print("extending dataframe")
         df = extend_df(df)
+        print("saving store_file: {}".format(store_file))
         with open(store_file, 'wb') as data_file:
             pickle.dump(df, data_file)
     else:
@@ -187,6 +192,7 @@ def vocabularies(df):
 
 
 def prepare_csvs(df):
+    print("preparing CVS files")
     train_df, eval_df = split_data(df)
     train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'))
     eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'))
