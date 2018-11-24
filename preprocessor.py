@@ -199,15 +199,9 @@ def prepare_csvs(df):
     df.to_csv(os.path.join(DUMP_DIR, 'all.csv'))
 
 
-def prepare_labels():
-    df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
-    print(df.head())
-
-
 def main():
     df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
     prepare_csvs(df)
-    prepare_labels()
 
 
 if __name__ == "__main__":
