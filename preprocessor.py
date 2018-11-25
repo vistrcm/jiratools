@@ -173,7 +173,7 @@ def extend_df(df, verbose=False):
     if verbose:
         print("extending DF")
     df = df.set_index('id')
-    df = df.fillna("Unknown")
+    df = df.fillna("unknown")
     df["summary_clean"] = df["summary"].map(lambda x: " ".join(process_text(x)))
     df["description_clean"] = df["description"].map(lambda x: " ".join(process_text(x)))
     del df["summary"]
