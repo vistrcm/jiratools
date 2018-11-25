@@ -50,7 +50,7 @@ def process_issue(issue, verbose=False):
     if verbose:
         print("processing {}".format(issue["key"]))
 
-    most_active = get_most_active(issue)
+    most_active = get_most_active(issue, stop_list=["jiralinuxcli", "sneelaudhuri", "noc"])
     cleaned = {
         "id": issue["id"],
         "key": issue["key"],
