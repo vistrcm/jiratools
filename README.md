@@ -1,8 +1,10 @@
 # jiratools
-Set of tools to work with jira.
+
+Set of tools to work with JIRA.
 
 ## crawler
-crawler.py search jira tickets defined by pattern and save it as json files in specified folder.
+
+crawler.py search JIRA tickets defined by pattern and save it as json files in specified folder.
 
 ```bash
 $ python crawler.py -h
@@ -10,24 +12,25 @@ $ python crawler.py -h
                     [--verify_ssl [VERIFY_SSL]]
                     url user password jql
   
-  Dump jira tickets to files
+  Dump JIRA tickets to files
   
   positional arguments:
-    url                   jira api url
-    user                  username to connect to jira
-    password              password to connect to jira
+    url                   JIRA api url
+    user                  username to connect to JIRA
+    password              password to connect to JIRA
     jql                   search query
   
   optional arguments:
     -h, --help            show this help message and exit
     --dst DST             destination to store files
     --no_verify_ssl NO_VERIFY_SSL
-                          do not verify ssl for jira connection
+                          do not verify ssl for JIRA connection
     --verify_ssl [VERIFY_SSL]
-                          verify ssl for jira connection
-``` 
+                          verify ssl for JIRA connection
+```
 
 To start in docker run
+
 ```bash
 $ docker run -it -v ${PWD}/dump:/dump \
     vistrcm/jiratoolscrawler \
