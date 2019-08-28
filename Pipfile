@@ -4,14 +4,8 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-tensorflow = "*"
-nltk = "*"
-pandas = "*"
-jupyter = "*"
-tensorflow-hub = "*"
-ipython = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "2.7"
+python_version = "3"
