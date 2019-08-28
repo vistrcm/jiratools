@@ -19,11 +19,16 @@ def parse_args():
     """parse CLI args"""
     parser = argparse.ArgumentParser(description='Dump jira tickets to files')
     parser.add_argument('url', type=str, help='jira api url')
-    parser.add_argument('user', type=str, help='username to connect to jira')
-    parser.add_argument('password', type=str, help='password to connect to jira')
-    parser.add_argument('jql', type=str, help='search query')
+    parser.add_argument('jql', type=str, help='search query.')
+    parser.add_argument('--user',
+                        type=str, default=os.getenv('JIRA_USER', "user"),
+                        help='Username to connect to jira. Can be set via environment variable JIRA_USER.'
+                        )
+    parser.add_argument('--password',
+                        type=str, default=os.getenv('JIRA_PASSWD', "user"),
+                        help='Password to connect to jira. Can be set via environment variable JIRA_USER.'
+                        )
     parser.add_argument('--dst', default="dump", help="destination to store files")
-    parser.add_argument('--no_verify_ssl', type=bool, help="do not verify ssl for jira connection")
     parser.add_argument("--verify_ssl", type=str2bool, nargs='?',
                         const=True, default=True,
                         help="verify ssl for jira connection")
