@@ -8,25 +8,25 @@ crawler.py search JIRA tickets defined by pattern and save it as json files in s
 
 ```bash
 $ python crawler.py -h
-  usage: crawler.py [-h] [--dst DST] [--no_verify_ssl NO_VERIFY_SSL]
-                    [--verify_ssl [VERIFY_SSL]]
-                    url user password jql
-  
-  Dump JIRA tickets to files
-  
-  positional arguments:
-    url                   JIRA api url
-    user                  username to connect to JIRA
-    password              password to connect to JIRA
-    jql                   search query
-  
-  optional arguments:
-    -h, --help            show this help message and exit
-    --dst DST             destination to store files
-    --no_verify_ssl NO_VERIFY_SSL
-                          do not verify ssl for JIRA connection
-    --verify_ssl [VERIFY_SSL]
-                          verify ssl for JIRA connection
+usage: crawler.py [-h] [--user USER] [--password PASSWORD] [--dst DST]
+                  [--verify_ssl [VERIFY_SSL]]
+                  url jql
+
+Dump jira tickets to files
+
+positional arguments:
+  url                   jira api url
+  jql                   search query.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --user USER           Username to connect to jira. Can be set via
+                        environment variable JIRA_USER.
+  --password PASSWORD   Password to connect to jira. Can be set via
+                        environment variable JIRA_USER.
+  --dst DST             destination to store files
+  --verify_ssl [VERIFY_SSL]
+                        verify ssl for jira connection
 ```
 
 To start in docker run
