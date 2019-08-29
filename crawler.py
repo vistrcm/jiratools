@@ -52,7 +52,6 @@ def search(api_url, session, jql):
             break
         issues.extend(tmp_issues)
         count += retrieved
-    print("SV: {}".format(len(issues)))
     return issues
 
 
