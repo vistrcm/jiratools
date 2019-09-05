@@ -64,16 +64,29 @@ def dump(session, issues, dst):
     count = 0
     for elem in issues:
         key = elem["key"]
-        print("retrieving {}".format(key))
-        resp = session.get(elem["self"])
-        resp.raise_for_status()
-        issue = resp.json()
+        try:
+            issue = get_issue(elem, session)
+        except requests.exceptions.HTTPError as http_ex:
+            if http_ex.response == requests.codes.internal_server_error:
+                print(f"WARNING. got 500 while getting issue {key}. Skipping. Exception: {http_ex}")
+                continue
+            print(f"ERROR. exception retrieving issue {key}: {http_ex}")
+            raise RuntimeError(f"Error getting issue {key}. Details: {http_ex}")
+
         outfile = "{dst}/{name}.json".format(dst=dst, name=key)
         print("saving {} to {}".format(key, outfile))
         with open(outfile, 'w') as outfile:
             json.dump(issue, outfile)
         count += 1
         print("stored {}/{} issues".format(count, amount))
+
+
+def get_issue(elem, session):
+    print("retrieving {}".format(elem["key"]))
+    resp = session.get(elem["self"])
+    resp.raise_for_status()
+    issue = resp.json()
+    return issue
 
 
 def main():
