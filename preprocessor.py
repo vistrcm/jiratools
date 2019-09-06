@@ -2,8 +2,9 @@ import json
 import os
 import pickle
 from collections import Counter
-import pandas as pd
+
 import numpy as np
+import pandas as pd
 
 DUMP_DIR = "dump"
 
