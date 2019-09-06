@@ -105,8 +105,6 @@ def extend_df(df, verbose=False):
         print("extending DF")
     df = df.set_index('id')
     df = df.fillna("unknown")
-    del df["summary"]
-    del df["description"]
     if verbose:
         print("extending DF done")
     return df
