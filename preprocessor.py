@@ -119,7 +119,7 @@ def vocabularies(df):
     return user_vocabulary, assignee_vocabulary, most_active_vocabulary
 
 
-def prepare_CSVs(df):
+def prepare_csv(df):
     print("preparing CVS files")
     train_df, eval_df = split_data(df)
     train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'))
@@ -129,7 +129,7 @@ def prepare_CSVs(df):
 
 def main():
     df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
-    prepare_CSVs(df)
+    prepare_csv(df)
 
 
 if __name__ == "__main__":
