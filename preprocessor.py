@@ -2,15 +2,8 @@ import json
 import os
 import pickle
 from collections import Counter
-
-import nltk
-import numpy as np
 import pandas as pd
-from nltk.corpus import stopwords
-
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('wordnet')
+import numpy as np
 
 DUMP_DIR = "dump"
 
@@ -66,19 +59,6 @@ def process_issue(issue, verbose=False):
     return cleaned
 
 
-def print_processed(issue):
-    print("key: {}".format(issue["key"]))
-    print("summary:\n{}\n".format(issue["summary"]))
-    print("new summary:\n{}\n".format(" ".join(
-        process_text(issue["summary"]))
-    ))
-    print("description:\n{}\n".format(issue["description"]))
-    print("new description:\n{}\n".format(" ".join(
-        process_text(issue["description"])))
-    )
-    print("-" * 80)
-
-
 def get_text(issue):
     return "\n\n".join([issue["fields"]["summary"], issue["fields"]["description"]])
 
@@ -91,56 +71,6 @@ def process_dir(directory):
             issue = json.load(json_data)
             issues.append(process_issue(issue))
     return issues
-
-
-def get_megatext(out_file="megatext.txt"):
-    megatext = ""
-    files = os.listdir(DUMP_DIR)
-    for json_file in files:
-        with open(os.path.join(DUMP_DIR, json_file), 'r') as json_data:
-            issue = json.load(json_data)
-            megatext += get_text(issue)
-    with open(out_file, "w") as out:
-        out.write(megatext)
-    print("{} created".format(out_file))
-
-
-def keep_token(tk):
-    if len(tk) < 2:
-        return False
-    if not tk.isalnum():
-        return False
-    if tk.isdigit():
-        return False
-    if tk in stopwords.words('english'):
-        return False
-    return True
-
-
-def process_text(text):
-    text = text.lower()
-
-    no_code = text.replace("{code}", "")
-    no_under = no_code.replace("_", " ")
-
-    tokens = nltk.wordpunct_tokenize(no_under)
-    clean_tokens = [t for t in tokens if keep_token(t)]
-
-    # lemmanization
-    lemmatizer = nltk.WordNetLemmatizer()
-    lemmanized = map(lemmatizer.lemmatize, clean_tokens)
-
-    return lemmanized
-
-
-def process_megatext(in_file="megatext.txt"):
-    with open(in_file, 'r') as inf:
-        data = inf.read()
-        out = process_text(data)
-
-    freq = nltk.FreqDist(out)
-    for key, val in freq.items():
-        print("{}: {}".format(val, key))
 
 
 def maybe_process(store_file, dump_dir="dump/issues/", force=False):
@@ -174,8 +104,6 @@ def extend_df(df, verbose=False):
         print("extending DF")
     df = df.set_index('id')
     df = df.fillna("unknown")
-    df["summary_clean"] = df["summary"].map(lambda x: " ".join(process_text(x)))
-    df["description_clean"] = df["description"].map(lambda x: " ".join(process_text(x)))
     del df["summary"]
     del df["description"]
     if verbose:
