@@ -62,7 +62,9 @@ def process_issue(issue, verbose=False):
 
     comments_text = get_comment_text(issue)
 
-    text = "\n\n".join([summary, description, comments_text])
+    text_raw = "\n\n".join([summary, description, comments_text])
+    # cleanup text
+    text = ''.join(c for c in text_raw if c.isprintable())
 
     cleaned = {
         "id": issue["id"],
@@ -117,6 +119,7 @@ def split_data(df, seed=1, limit=0.8):
     # Now, split the data into two parts -- training and evaluation.
     np.random.seed(seed=seed)  # makes result reproducible
     msk = np.random.rand(len(df)) < limit
+    df["is_valid"] = ~msk
     traindf = df[msk]
     evaldf = df[~msk]
     return traindf, evaldf
@@ -142,14 +145,17 @@ def vocabularies(df):
 def prepare_csv(df):
     print("preparing CVS files")
     train_df, eval_df = split_data(df)
-    train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'))
-    eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'))
-    df.to_csv(os.path.join(DUMP_DIR, 'all.csv'))
+    train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'), index=False)
+    eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'), index=False)
+    df.to_csv(os.path.join(DUMP_DIR, 'all.csv'), index=False)
 
 
 def main():
     df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
-    prepare_csv(df)
+    # some cleanup
+    text_data = df[['most_active', 'text']]
+    text_data = text_data.rename(columns={'most_active': 'label'})
+    prepare_csv(text_data)
 
 
 if __name__ == "__main__":
