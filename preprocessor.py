@@ -24,11 +24,13 @@ def get_most_active(issue, stop_list=None):
     if not stop_list:
         stop_list = []
 
+    stop_list.append("undefined")  # extend stop_list with 'undefined'
+
     comments = issue["fields"]["comment"]["comments"]
     if not comments:  # no comments in the issue
         return get_key(issue, "assignee")
 
-    authors = [comment["author"]["key"] for comment in comments]
+    authors = [comment.get("author", {"key": "undefined"})["key"] for comment in comments]
     # remove stop words from authors
     cleaned_authors = [author for author in authors if author not in stop_list]
 
