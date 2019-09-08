@@ -72,11 +72,13 @@ def get_text(issue):
 
 
 def process_dir(directory):
-    files = os.listdir(directory)
     issues = []
-    for json_file in files:
-        with open(os.path.join(directory, json_file), 'r') as json_data:
-            issue = json.load(json_data)
+    for root, dirs, files in os.walk(".", topdown=False):
+        for name in files:
+            if not name.lower().endswith(".json"):
+                continue
+            with open(os.path.join(root, name), 'r') as json_data:
+                issue = json.load(json_data)
             issues.append(process_issue(issue))
     return issues
 
