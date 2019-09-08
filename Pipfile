@@ -8,6 +8,7 @@ requests = "*"
 pandas = "*"
 numpy = "*"
 jupyter = "*"
+fastai = "*"
 
 [dev-packages]
 pylint = "*"
