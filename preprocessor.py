@@ -62,9 +62,9 @@ def process_issue(issue, verbose=False):
 
     comments_text = get_comment_text(issue)
 
-    text_raw = "\n\n".join([summary, description, comments_text])
+    text_raw = " ".join([summary, description, comments_text])
     # cleanup text
-    text = ''.join(c for c in text_raw if c.isprintable())
+    text = ' '.join(text_raw.splitlines())
 
     cleaned = {
         "id": issue["id"],
