@@ -42,15 +42,27 @@ def get_most_active(issue, stop_list=None):
     return counter.most_common(1)[0][0]
 
 
+def get_comment_text(issue):
+    comments = issue["fields"]["comment"]["comments"]
+    return "\n".join([comment["body"] for comment in comments])
+
+
 def process_issue(issue, verbose=False):
     if verbose:
         print("processing {}".format(issue["key"]))
 
     most_active = get_most_active(issue, stop_list=["jiralinuxcli", "sneelaudhuri", "noc"])
+
+    summary = issue["fields"]["summary"]
+
     # sometime description is None for some reason.
     description = issue["fields"].get("description")
     if description is None:
         description = ""
+
+    comments_text = get_comment_text(issue)
+
+    text = "\n\n".join([summary, description, comments_text])
 
     cleaned = {
         "id": issue["id"],
@@ -61,8 +73,9 @@ def process_issue(issue, verbose=False):
         "reporter": get_key(issue, "reporter"),
         # decode - hack to avoid strange symbols
         "description": description.encode('unicode-escape').decode('utf-8'),
-        "summary": issue["fields"]["summary"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
-        # "comment": issue["fields"]["comment"],
+        "summary": summary.encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
+        # text from summary, description and comments
+        "text": text,
     }
     return cleaned
 
