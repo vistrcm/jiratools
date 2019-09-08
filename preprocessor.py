@@ -47,6 +47,11 @@ def process_issue(issue, verbose=False):
         print("processing {}".format(issue["key"]))
 
     most_active = get_most_active(issue, stop_list=["jiralinuxcli", "sneelaudhuri", "noc"])
+    # sometime description is None for some reason.
+    description = issue["fields"].get("description")
+    if description is None:
+        description = ""
+
     cleaned = {
         "id": issue["id"],
         "key": issue["key"],
@@ -55,7 +60,7 @@ def process_issue(issue, verbose=False):
         "status": issue["fields"]["status"]["name"],
         "reporter": get_key(issue, "reporter"),
         # decode - hack to avoid strange symbols
-        "description": issue["fields"]["description"].encode('unicode-escape').decode('utf-8'),
+        "description": description.encode('unicode-escape').decode('utf-8'),
         "summary": issue["fields"]["summary"].encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
         # "comment": issue["fields"]["comment"],
     }
