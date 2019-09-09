@@ -127,6 +127,7 @@ def maybe_process(store_file, dump_dir="dump/", force=False):
         with open(store_file, 'wb') as data_file:
             pickle.dump(df, data_file)
     else:
+        print(f"loading saved data from {store_file}")
         with open(store_file, 'rb') as data_file:
             df = pickle.load(data_file)
     return df
