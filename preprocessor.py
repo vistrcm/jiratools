@@ -162,14 +162,14 @@ def prepare_csv(df):
     del train_df['is_valid']
     del valid_df['is_valid']
     train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'), index=False)
-    eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'), index=False)
+    valid_df.to_csv(os.path.join(DUMP_DIR, 'valid.csv'), index=False)
     df.to_csv(os.path.join(DUMP_DIR, 'all.csv'), index=False)
 
 
 def main():
     df = maybe_process(os.path.join(DUMP_DIR, "data.pkl"))
     # some cleanup
-    text_data = df[['most_active', 'text']]
+    text_data = df[['most_active', 'text', 'is_valid']]
     text_data = text_data.rename(columns={'most_active': 'label'})
     prepare_csv(text_data)
 
