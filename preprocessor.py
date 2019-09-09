@@ -121,6 +121,8 @@ def maybe_process(store_file, dump_dir="dump/", force=False):
         df = pd.DataFrame(data)
         print("extending dataframe")
         df = extend_df(df)
+        print("splitting dataset")
+        df = split_df(df)
         print("saving store_file: {}".format(store_file))
         with open(store_file, 'wb') as data_file:
             pickle.dump(df, data_file)
@@ -130,14 +132,10 @@ def maybe_process(store_file, dump_dir="dump/", force=False):
     return df
 
 
-def split_data(df, seed=1, limit=0.8):
-    # Now, split the data into two parts -- training and evaluation.
-    np.random.seed(seed=seed)  # makes result reproducible
-    msk = np.random.rand(len(df)) < limit
-    df["is_valid"] = ~msk
-    traindf = df[msk]
-    evaldf = df[~msk]
-    return traindf, evaldf
+def split_data(df):
+    traindf = df[~df["is_valid"]]
+    validdf = df[df["is_valid"]]
+    return traindf, validdf
 
 
 def extend_df(df, verbose=False):
@@ -159,7 +157,9 @@ def vocabularies(df):
 
 def prepare_csv(df):
     print("preparing CVS files")
-    train_df, eval_df = split_data(df)
+    train_df, valid_df = split_data(df)
+    del train_df['is_valid']
+    del valid_df['is_valid']
     train_df.to_csv(os.path.join(DUMP_DIR, 'train.csv'), index=False)
     eval_df.to_csv(os.path.join(DUMP_DIR, 'eval.csv'), index=False)
     df.to_csv(os.path.join(DUMP_DIR, 'all.csv'), index=False)
