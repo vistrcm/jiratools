@@ -98,6 +98,21 @@ def process_dir(directory):
     return issues
 
 
+def split_df(df, seed=1, limit=0.8):
+    # TODO: fix split. Make it balanced.
+    # Now, split the data into two parts -- training and evaluation.
+    np.random.seed(seed=seed)  # makes result reproducible
+    msk = np.random.rand(len(df)) < limit
+    df["is_valid"] = ~msk
+    # make sure all labels from valid presented in training set
+    # if not, flip 'is_valid' flag to make it training
+    train_targets = df[~df["is_valid"]]["most_active"].unique()
+    for element in df[df["is_valid"]]["most_active"].unique():
+        if element not in train_targets:
+            df.loc[df["most_active"] == element, "is_valid"] = False
+    return df
+
+
 def maybe_process(store_file, dump_dir="dump/issues/", force=False):
     if force or not os.path.exists(store_file):
         print("processing json dump")
