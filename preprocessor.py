@@ -88,7 +88,7 @@ def get_text(issue):
 
 def process_dir(directory):
     issues = []
-    for root, dirs, files in os.walk(".", topdown=False):
+    for root, dirs, files in os.walk(directory, topdown=False):
         for name in files:
             if not name.lower().endswith(".json"):
                 continue
@@ -113,7 +113,7 @@ def split_df(df, seed=1, limit=0.8):
     return df
 
 
-def maybe_process(store_file, dump_dir="dump/issues/", force=False):
+def maybe_process(store_file, dump_dir="dump/", force=False):
     if force or not os.path.exists(store_file):
         print("processing json dump")
         data = process_dir(dump_dir)
