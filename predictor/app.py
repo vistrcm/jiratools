@@ -1,6 +1,6 @@
+from fastai.text import load_learner
 from flask import Flask
 from flask import jsonify
-from fastai.text import load_learner
 from flask import request
 
 # load model
@@ -19,12 +19,12 @@ def predict():
 
     pred_class, pred_idx, outputs = learn.predict(text)
     app.logger.info(
-        'summary: %s, description: %. pred_class: %s, pred_idx: %s, probabilities: %s',
-        summary, description, pred_class, pred_idx, outputs
+        'summary: "%s", description: "%s". pred_class: %s', summary, description, pred_class
     )
     return jsonify({
-        "class": pred_class,
-        "idx": pred_idx,
-        "probabilities": outputs,
+        "predictions": sorted(
+            zip(learn.data.classes, map(float, outputs)),
+            key=lambda p: p[1],
+            reverse=True
+        )
     })
-
