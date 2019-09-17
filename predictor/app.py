@@ -1,3 +1,5 @@
+import logging
+
 from fastai.text import load_learner
 from flask import Flask
 from flask import jsonify
@@ -8,6 +10,16 @@ learn = load_learner(".", "20190916.first.pkl")
 
 # load web app
 app = Flask(__name__)
+
+if __name__ != "__main__":
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
+
+
+@app.route("/healthz")
+def healthz():
+    return "."
 
 
 @app.route('/predict/', methods=['POST'])
