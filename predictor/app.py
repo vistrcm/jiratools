@@ -31,7 +31,10 @@ def predict():
 
     pred_class, pred_idx, outputs = learn.predict(text)
     app.logger.info(
-        'summary: "%s", description: "%s". pred_class: %s', summary, description, pred_class
+        'summary: "%s", description: "%s". pred_class: %s',
+        summary,
+        description.replace("\r", "\\r").replace("\n", "\\n"),  # cleanup description for logs
+        pred_class
     )
     return jsonify({
         "predictions": sorted(
