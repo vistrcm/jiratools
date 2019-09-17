@@ -77,6 +77,7 @@ def process_issue(issue, verbose=False):
         # decode - hack to avoid strange symbols
         "description": description.encode('unicode-escape').decode('utf-8'),
         "summary": summary.encode('unicode-escape').decode('utf-8'),  # hack to avoid strange symbols
+        "comments_text": comments_text,
         # text from summary, description and comments
         "text": text,
     }
