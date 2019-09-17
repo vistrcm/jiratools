@@ -1,4 +1,0 @@
-# ignore trainer/labels.py it can contain ionstance specific data.
-# no need in repo.
-trainer/labels.py
-output/

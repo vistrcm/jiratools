@@ -1,3 +1,0 @@
-LABELS = []
-
-LABELS_REPORTER = []
