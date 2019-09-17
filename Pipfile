@@ -9,6 +9,8 @@ pandas = "*"
 numpy = "*"
 jupyter = "*"
 fastai = "*"
+flask = "*"
+gunicorn = "*"
 
 [dev-packages]
 pylint = "*"
