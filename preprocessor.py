@@ -61,6 +61,14 @@ def process_issue(issue, verbose=False):
     if description is None:
         description = ""
 
+    # dirty hack on specific description "null"
+    if description == "null":
+        description = "xyznulldescriptionzyx"
+
+    # replace empty description with "xyznodescriptionzyx"
+    if description == "":
+        description = "xyznodescriptionzyx"
+
     comments_text = get_comment_text(issue)
 
     text_raw = " ".join([summary, description, comments_text])
