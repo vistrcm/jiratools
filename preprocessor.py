@@ -55,7 +55,7 @@ def process_issue(issue, verbose=False):
     if verbose:
         print("processing {}".format(issue["key"]))
 
-    most_active = get_most_active(issue, stop_list=["jiralinuxcli", "sneelaudhuri", "noc"])
+    most_active = get_most_active(issue, stop_list=["jira", "jiralinuxcli", "sneelaudhuri", "noc", "opsgatekeeper"])
 
     summary = issue["fields"]["summary"]
 
