@@ -11,3 +11,6 @@ dump/
 cloudml-samples-master/
 
 *.pyc
+
+# ignore mapping.csv. This information is not generic.
+mapping.csv
