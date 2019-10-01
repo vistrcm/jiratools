@@ -169,13 +169,13 @@ def maybe_process(store_file, dump_dir="dump/", force=False):
         df = pd.DataFrame(data)
         print("extending dataframe")
         df = extend_df(df)
-        print("splitting dataset")
-        df = split_df(df)
         df = maybe_map_names(df)
         # exclusions
         df["excluded"] = False
         df = exclude_rare(df)
         df = exclude_unknown(df)
+        print("splitting dataset")
+        df = split_df(df)
         print("saving store_file: {}".format(store_file))
         with open(store_file, 'wb') as data_file:
             pickle.dump(df, data_file)
