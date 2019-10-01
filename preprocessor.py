@@ -144,6 +144,22 @@ def maybe_map_names(df, file_name="mapping.csv"):
     return df
 
 
+def exclude_rare(df, limit=200):
+    """mark rare authors as excluded. limit - minimum amount to keep"""
+
+    for user in df["most_active"].unique():
+        size = df.loc[df["most_active"] == user].shape[0]
+        if size < limit:
+            pass
+            df.loc[df["most_active"] == user, "excluded"] = True
+    return df
+
+
+def exclude_unknown(df):
+    df.loc[df["most_active"] == "unknown", "excluded"] = True
+    return df
+
+
 def maybe_process(store_file, dump_dir="dump/", force=False):
     if force or not os.path.exists(store_file):
         print("processing json dump")
@@ -155,6 +171,10 @@ def maybe_process(store_file, dump_dir="dump/", force=False):
         print("splitting dataset")
         df = split_df(df)
         df = maybe_map_names(df)
+        # exclusions
+        df["excluded"] = False
+        df = exclude_rare(df)
+        df = exclude_unknown(df)
         print("saving store_file: {}".format(store_file))
         with open(store_file, 'wb') as data_file:
             pickle.dump(df, data_file)
