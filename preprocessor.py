@@ -3,6 +3,7 @@ import json
 import os
 import pickle
 from collections import Counter
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -126,6 +127,23 @@ def split_df(df, seed=1, limit=0.8):
     return df
 
 
+def maybe_map_names(df, file_name="mapping.csv"):
+    mapping_file = Path(file_name)
+    if not mapping_file.exists():
+        print("no mapping found")
+        return df
+
+    # load mapping
+    map_df = pd.read_csv(file_name, index_col="source")
+
+    # iterate over most_active
+    for candidate in df["most_active"].unique():
+        if candidate in map_df.index:
+            df.loc[df["most_active"] == candidate, "most_active"] = map_df.loc[candidate].target
+
+    return df
+
+
 def maybe_process(store_file, dump_dir="dump/", force=False):
     if force or not os.path.exists(store_file):
         print("processing json dump")
@@ -136,6 +154,7 @@ def maybe_process(store_file, dump_dir="dump/", force=False):
         df = extend_df(df)
         print("splitting dataset")
         df = split_df(df)
+        df = maybe_map_names(df)
         print("saving store_file: {}".format(store_file))
         with open(store_file, 'wb') as data_file:
             pickle.dump(df, data_file)
