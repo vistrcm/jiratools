@@ -40,7 +40,10 @@ def get_most_active(issue, stop_list=None):
         return get_key(issue, "assignee")
 
     counter = Counter(cleaned_authors)
-    return counter.most_common(1)[0][0]
+    candidate = counter.most_common(1)[0][0]
+    if candidate.startswith("$"):
+        return get_key(issue, "assignee")
+    return candidate
 
 
 def get_comment_text(issue):
