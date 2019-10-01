@@ -146,7 +146,7 @@ def maybe_map_names(df, file_name="mapping.csv"):
 
 def exclude_rare(df, limit=200):
     """mark rare authors as excluded. limit - minimum amount to keep"""
-
+    print("excluding rare")
     for user in df["most_active"].unique():
         size = df.loc[df["most_active"] == user].shape[0]
         if size < limit:
@@ -156,6 +156,7 @@ def exclude_rare(df, limit=200):
 
 
 def exclude_unknown(df):
+    print("excluding unknown")
     df.loc[df["most_active"] == "unknown", "excluded"] = True
     return df
 
