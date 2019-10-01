@@ -205,7 +205,8 @@ def vocabularies(df):
 
 def prepare_csv(df):
     lang_model_data = df[['label', 'text', 'is_valid']]
-    classifier_data = df[['label', 'summary', 'description', 'is_valid']]
+    included = df.loc[~df["excluded"]]
+    classifier_data = included[['label', 'summary', 'description', 'is_valid']]
     print("preparing CVS files")
     lang_model_data.to_csv(os.path.join(DUMP_DIR, 'texts.csv'), index=False, quoting=csv.QUOTE_ALL)
     classifier_data.to_csv(os.path.join(DUMP_DIR, 'classifier.csv'), index=False, quoting=csv.QUOTE_ALL)
