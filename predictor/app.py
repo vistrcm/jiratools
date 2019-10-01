@@ -6,7 +6,7 @@ from flask import jsonify
 from flask import request
 
 # load model
-learn = load_learner(".", "20190916.first.pkl")
+learn = load_learner(".", "20191001.reducelabels.pkl")
 
 # load web app
 app = Flask(__name__)
