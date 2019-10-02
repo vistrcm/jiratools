@@ -41,10 +41,18 @@ def get_most_active(issue, stop_list=None):
         return get_key(issue, "assignee")
 
     counter = Counter(cleaned_authors)
-    candidate = counter.most_common(1)[0][0]
-    if candidate.startswith("$"):
-        return get_key(issue, "assignee")
+    candidate = get_candidate_or_assignee(counter, get_key(issue, "assignee"))
     return candidate
+
+
+def get_candidate_or_assignee(commentators, assignee):
+    """If assignee post comments. At least half of most common commentator, return assignee.
+    Most common otherwise."""
+
+    most_common, count = commentators.most_common(1)[0]
+    if commentators[assignee] / count >= 0.5:
+        return assignee
+    return most_common
 
 
 def get_comment_text(issue):
