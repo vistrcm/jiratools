@@ -147,7 +147,9 @@ def maybe_map_names(df, file_name="mapping.csv"):
     # iterate over most_active
     for candidate in df["most_active"].unique():
         if candidate in map_df.index:
-            df.loc[df["most_active"] == candidate, "most_active"] = map_df.loc[candidate].target
+            target = map_df.loc[candidate].target
+            print(f"mapping {candidate} -> {target}")
+            df.loc[df["most_active"] == candidate, "most_active"] = target
 
     return df
 
