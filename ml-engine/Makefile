@@ -1,6 +1,15 @@
-IMAGE_ID = gcr.io/sv-fastai/jiratools:v0
+BASE_IMAGE_ID = gcr.io/sv-fastai/fastai:v1
+IMAGE_ID = gcr.io/sv-fastai/jiratools:v1
 EPOCH = $(shell date +%s)
 JOB_NAME = classify_$(EPOCH)
+
+.PHONY:build-base
+build-base:
+	docker build -f Dockerfile-base -t $(BASE_IMAGE_ID) .
+
+.PHONY:push-base
+push-base:
+	docker push $(BASE_IMAGE_ID)
 
 .PHONY:build
 build:
