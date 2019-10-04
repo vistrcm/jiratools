@@ -12,6 +12,7 @@ fastai = "*"
 flask = "*"
 gunicorn = "*"
 seaborn = "*"
+google-cloud-storage = "*"
 
 [dev-packages]
 pylint = "*"
