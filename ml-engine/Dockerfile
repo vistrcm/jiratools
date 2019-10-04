@@ -1,0 +1,36 @@
+FROM nvidia/cuda
+
+# Installs necessary dependencies.
+RUN apt-get update && apt-get install -y --no-install-recommends \
+         curl \
+         python3 \
+         python3-dev \
+         python3-setuptools \
+         python3-pip \
+     ## install google cloud sdk \
+     && echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+     && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - \
+     && apt-get update -y \
+     && apt-get install google-cloud-sdk -y \
+     && rm -rf /var/lib/apt/lists/*
+
+# Installs pytorch and torchvision.
+RUN pip3 --no-cache-dir install \
+    google-cloud-storage \
+    fastai \
+    cloudml-hypertune
+
+WORKDIR /root
+
+# Copies the trainer code
+RUN mkdir /root/trainer
+COPY trainer/classification.py /root/trainer/classification.py
+
+# Sets up the entry point to invoke the trainer.
+ENTRYPOINT ["python3", "trainer/classification.py"]
+
+
+
+
+
+
