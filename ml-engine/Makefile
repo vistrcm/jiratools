@@ -25,7 +25,7 @@ submit:
 		--region us-central1 \
 		--master-image-uri $(IMAGE_ID) \
 		-- \
-		--unusedargument
+		--bs 60
 
 .PHONY: submitgpu
 submitgpu:
@@ -35,4 +35,4 @@ submitgpu:
     		--master-accelerator count=1,type=nvidia-tesla-p4 \
     		--master-image-uri $(IMAGE_ID) \
     		-- \
-    		--unusedargument
+    		--bs 60
