@@ -114,8 +114,10 @@ def process_dir(directory):
         for name in files:
             if not name.lower().endswith(".json"):
                 continue
-            with open(os.path.join(root, name), 'r') as json_data:
+            src_file = os.path.join(root, name)
+            with open(src_file, 'r') as json_data:
                 issue = json.load(json_data)
+                issue["meta_scr_file"] = src_file
             issues.append(process_issue(issue))
     return issues
 
@@ -214,7 +216,7 @@ def vocabularies(df):
 
 
 def prepare_csv(df):
-    lang_model_data = df[['label', 'text', 'is_valid']]
+    lang_model_data = df[['label', 'text', 'is_valid', "meta_scr_file"]]
     included = df.loc[~df["excluded"]]
     classifier_data = included[['label', 'summary', 'description', 'is_valid']]
     print("preparing CVS files")
