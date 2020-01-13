@@ -118,8 +118,7 @@ def process_dir(directory):
             with open(src_file, 'r') as json_data:
                 issue = json.load(json_data)
                 issue["meta_scr_file"] = src_file
-            issues.append(process_issue(issue))
-    return issues
+            yield process_issue(issue)
 
 
 def split_df(df, seed=1, limit=0.8):
