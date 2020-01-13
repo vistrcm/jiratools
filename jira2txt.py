@@ -11,7 +11,7 @@ def md5(text: str):
 
 def main():
     src_dir = "dump/"
-    dst_dir = "jita_texts"
+    dst_dir = "jira_texts"
 
     os.makedirs(dst_dir, exist_ok=True)
 
