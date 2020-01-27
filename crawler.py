@@ -38,7 +38,6 @@ def parse_args():
 def search(api_url, session, jql):
     """do a paginated search"""
     search_url = "{}/search".format(api_url)
-    issues = []
     count = 0
 
     while True:
@@ -50,9 +49,12 @@ def search(api_url, session, jql):
         retrieved = len(tmp_issues)
         if retrieved <= 0:
             break
-        issues.extend(tmp_issues)
+
         count += retrieved
-    return issues
+
+        # yield issues one by one
+        for issue in tmp_issues:
+            yield issue
 
 
 def dump(session, issues, dst):
@@ -60,7 +62,6 @@ def dump(session, issues, dst):
     # create dst directory
     os.makedirs(dst, exist_ok=True)
 
-    amount = len(issues)
     count = 0
     for elem in issues:
         key = elem["key"]
@@ -78,7 +79,7 @@ def dump(session, issues, dst):
         with open(outfile, 'w') as outfile:
             json.dump(issue, outfile)
         count += 1
-        print("stored {}/{} issues".format(count, amount))
+        print(f"stored {count} issues")
 
 
 def get_issue(elem, session):
@@ -99,7 +100,6 @@ def main():
 
     print("searching for issues")
     issues = search(args.url, jira_session, args.jql)
-    print("found {} issues".format(len(issues)))
 
     dump(jira_session, issues, args.dst)
 
