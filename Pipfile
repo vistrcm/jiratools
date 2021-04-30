@@ -13,6 +13,8 @@ flask = "*"
 gunicorn = "*"
 seaborn = "*"
 google-cloud-storage = "*"
+# security updates
+Pygments = ">=2.7.4"
 
 [dev-packages]
 pylint = "*"
